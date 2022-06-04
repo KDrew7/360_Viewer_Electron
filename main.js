@@ -8,5 +8,5 @@ app.on('ready',function(){
 
     var win = new BrowserWindow({width: 1280, height: 720});
 
-    win.loadURL('index.html');
+    win.loadFile('index.html');
 });
