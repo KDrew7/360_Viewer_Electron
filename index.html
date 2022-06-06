@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://r105.threejsfundamentals.org/threejs/resources/threejs/r105/js/controls/OrbitControls.js"></script>
+    <script src="orbit.js"></script>
     
 
     <style>
@@ -36,6 +38,7 @@
     <div id="webglviewer" class="full-screen"></div>
     <script>
 
+        
         var renderer = new THREE.WebGLRenderer();
 
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -55,16 +58,61 @@
         camera.position.set(0,0,0);
         camera.lookAt(10,0,0);
 
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(camera.position.x + .1, camera.position.y, camera.position.z)
+
         var geometry = new THREE.TorusBufferGeometry(3,3,3,3,3);
-        var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+        var material = new THREE.MeshLambertMaterial({ color: 0x00ff00 })
 
         var torus = new THREE.Mesh(geometry, material);
-        torus.position.set(10,0,0);
+        torus.position.set(30,0,0);
 
         scene.add(torus);
 
-        renderer.render(scene, camera);
+        var loader = new THREE.TextureLoader();
+        loader.load(
+            'kris.jpg',
+            function (texture) {
+                var material = new THREE.MeshBasicMaterial( {
+                    map: texture
+                });
 
+                var geometry = new THREE.SphereBufferGeometry(3,32,32);
+                geometry.scale(-1,1,1);
+                var sphere = new THREE.Mesh(geometry, material);
+                sphere.position = camera.position;
+
+                scene.add(sphere);
+
+                renderer.render(scene, camera);
+
+            }//,
+
+            // undefined,
+            // function (err){console.error('error!');
+            
+        
+        );
+
+        var light = new THREE.PointLight(0xffffff, 2, 100);
+        light.position.set(0,0,0);
+        scene.add(light);
+
+        //controls.update();
+        renderer.render(scene, camera);
+        animate();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+
+            renderer.render(scene, camera);
+        }
+
+        
+
+        
 
     </script>
 </body>
